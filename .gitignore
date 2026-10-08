@@ -1,0 +1,11 @@
+library/
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+server/config.json
+
+# agent 对话历史与本地状态
+.claude/projects/
+.claude/sessions/
+.claude/*.log

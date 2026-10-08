@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>素材库</title>
+  <style>
+    @font-face { font-family: "title-black"; src: url("/fonts/title-black.ttf"); }
+    @font-face { font-family: "song"; src: url("/fonts/song.ttf"); }
+    @font-face { font-family: "hanchan"; src: url("/fonts/hanchan.otf"); }
+    @font-face { font-family: "screen-song"; src: url("/fonts/screen-song.ttf"); }
+    @font-face { font-family: "round"; src: url("/fonts/round.ttf"); }
+    @font-face { font-family: "handwrite"; src: url("/fonts/handwrite.ttf"); }
+    @font-face { font-family: "fangsong"; src: url("/fonts/fangsong.ttf"); }
+    @font-face { font-family: "jiying"; src: url("/fonts/jiying.ttf"); }
+    :root {
+      color-scheme: light dark;
+      --bg: #f7f4ef;
+      --panel: #fffdf9;
+      --ink: #1c1917;
+      --muted: #57534e;
+      --line: #e0d9ce;
+      --accent: #9f3d1c;
+      --accent-ink: #fffaf5;
+      --thumb: #e7e0d6;
+      --shadow: 0 1px 2px rgba(28, 25, 23, 0.06), 0 8px 24px rgba(28, 25, 23, 0.06);
+      --sidebar: 300px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1c1917;
+        --panel: #292524;
+        --ink: #f5f0e8;
+        --muted: #a8a29e;
+        --line: #44403c;
+        --accent: #d4522a;
+        --accent-ink: #1c1917;
+        --thumb: #3a3532;
+        --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.3);
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 15px/1.6 "Segoe UI", "Microsoft YaHei", sans-serif;
+      height: 100vh;
+      display: flex;
+    }
+    button, input, textarea, select { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+
+    #sidebar {
+      width: var(--sidebar);
+      flex: none;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--line);
+      background: var(--bg);
+    }
+    .brand { display: flex; align-items: center; justify-content: space-between; padding: 16px 16px 8px; }
+    .brand h1 { font: 600 16px/1.2 "Segoe UI", "Microsoft YaHei", sans-serif; margin: 0; }
+    .zones { display: flex; gap: 4px; padding: 0 12px 8px; }
+    .zones button { flex: 1; background: none; border: 0; border-radius: 8px; padding: 6px 0; color: var(--muted); }
+    .zones button.on { background: var(--panel); color: var(--ink); font-weight: 600; }
+    .badge { color: var(--accent); font-size: 11px; font-weight: 600; }
+    .icon-btn { background: none; border: 0; color: var(--muted); padding: 6px; border-radius: 8px; display: flex; }
+    .icon-btn:hover { background: var(--panel); color: var(--ink); }
+    #q { margin: 4px 12px 8px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; }
+    #count { color: var(--muted); font-size: 12px; padding: 0 16px 6px; }
+    #list { overflow-y: auto; flex: 1; }
+    .group { position: sticky; top: 0; background: var(--bg); color: var(--muted); font-size: 12px; padding: 8px 16px 4px; }
+    .item { display: flex; gap: 10px; width: 100%; text-align: left; background: none; border: 0; padding: 8px 12px; border-radius: 10px; align-items: center; }
+    .item input[type="checkbox"] { flex: none; width: 16px; height: 16px; accent-color: var(--accent); }
+    .select-bar { display: none; gap: 8px; align-items: center; padding: 6px 14px; border-bottom: 1px solid var(--line); font-size: 13px; }
+    body.selecting .select-bar { display: flex; }
+    .item:hover { background: var(--panel); }
+    .item.active { background: var(--panel); box-shadow: inset 2px 0 0 var(--accent); }
+    .item .who { font-weight: 600; font-size: 14px; }
+    .item .handle, .item .when { color: var(--muted); font-weight: 400; font-size: 12px; }
+    .item .excerpt { margin: 1px 0 0; font-size: 13px; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .thumb { flex: none; width: 44px; height: 44px; border-radius: 8px; background: var(--thumb); position: relative; overflow: hidden; }
+    .thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .thumb.video::after, .cover.video::after { content: ""; position: absolute; left: 50%; top: 50%; transform: translate(-40%, -50%); border-style: solid; border-width: 6px 0 6px 10px; border-color: transparent transparent transparent var(--ink); opacity: 0.8; }
+    .empty { color: var(--muted); padding: 24px 16px; }
+    .more { color: var(--muted); text-align: center; padding: 12px; font-size: 12px; }
+
+    #stage { flex: 1; min-width: 0; overflow-y: auto; }
+    #grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; padding: 20px; }
+    .card { display: block; width: 100%; text-align: left; background: var(--panel); border: 0; border-radius: 16px; padding: 0; overflow: hidden; box-shadow: var(--shadow); }
+    .card .cover { aspect-ratio: 16/9; background: var(--thumb); position: relative; }
+    .card .cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .card .pad { padding: 12px 14px 14px; }
+    .card .who { font-weight: 600; font-size: 14px; }
+    .card .excerpt { margin: 2px 0 0; color: var(--muted); font-size: 13px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+    #work { display: none; height: 100%; }
+    body.working #grid { display: none; }
+    body.working #work { display: flex; flex-direction: column; height: 100%; }
+    .post-toolbar { display: flex; gap: 8px; align-items: center; padding: 10px 20px; border-bottom: 1px solid var(--line); }
+    #source { flex: 1; overflow-y: auto; padding: 28px 20px 48px; }
+    #source .post { max-width: 680px; margin: 0 auto; }
+    .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); display: flex; align-items: center; justify-content: center; font-weight: 600; flex: none; }
+    .post-head { display: flex; gap: 12px; align-items: center; }
+    .post-head .name { font-weight: 600; }
+    .post-head .meta { color: var(--muted); font-size: 13px; }
+    .body p { margin: 0 0 14px; line-height: 1.75; }
+    .body p:last-child { margin-bottom: 0; }
+    .body a { color: var(--accent); text-decoration: none; }
+    .body a:hover { text-decoration: underline; }
+    .media { display: grid; gap: 10px; margin-top: 14px; }
+    .shot { position: relative; border-radius: 12px; overflow: hidden; background: var(--thumb); cursor: pointer; min-height: 120px; }
+    .shot img, .shot video { display: block; width: 100%; }
+    .shot.video { background: #000; min-height: 180px; }
+    .shot.video::after { content: ""; position: absolute; left: 50%; top: 50%; transform: translate(-40%, -50%); border-style: solid; border-width: 14px 0 14px 22px; border-color: transparent transparent transparent #fff; }
+    .shot.playing::after { display: none; }
+
+    body.editing #sidebar, body.editing #stage { display: none; }
+    body.editing #editor { display: flex; }
+    #editor { display: none; flex-direction: column; position: fixed; inset: 0; background: var(--bg); z-index: 12; }
+    .editor-bar { display: flex; gap: 8px; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+    .editor-bar select { width: 220px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; }
+    #pages { flex: 1; min-height: 0; display: flex; gap: 20px; padding: 20px; align-items: stretch; justify-content: center; }
+    .note-stage { flex: none; width: min(420px, 46%); background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); display: flex; flex-direction: column; color: #1a1a1a; }
+    .note-stage .gallery { position: relative; aspect-ratio: 3/4; background: #000; }
+    .note-stage .slide { position: absolute; inset: 0; display: none; padding: 9% 8%; flex-direction: column; font-family: "Microsoft YaHei", "PingFang SC", sans-serif; overflow: hidden; }
+    .note-stage .slide.on { display: flex; }
+    .note-stage .slide .rule { width: 36px; height: 4px; border-radius: 2px; margin: 0 auto 18px; }
+    .note-stage .slide.post-slide { align-items: center; justify-content: center; padding: 6%; }
+    .note-stage .slide .mini-phone { width: 72%; aspect-ratio: 9/19; background: #1C1C1E; border-radius: 28px; padding: 8px; box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4), inset 0 0 0 1px #3A3A3C; transform: rotateY(-12deg) rotateX(3deg); }
+    .note-stage .slide .mini-screen { background: #fff; border-radius: 22px; padding: 12px 12px 14px; color: #1C1917; text-align: left; height: 100%; overflow: hidden; display: flex; flex-direction: column; }
+    .note-stage .slide .mini-status { display: flex; justify-content: space-between; font-size: 0.62em; color: #1C1917; font-weight: 600; margin-bottom: 10px; }
+    .note-stage .slide .post-head { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; }
+    .note-stage .slide .post-avatar { width: 42px; height: 42px; border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; flex: none; }
+    .note-stage .slide .post-name { font-weight: 700; font-size: 1.05em; }
+    .note-stage .slide .post-handle { color: #6B7280; font-size: 0.85em; }
+    .note-stage .slide .post-line { line-height: 1.65; margin-bottom: 4px; }
+    .note-stage .slide .post-foot { display: flex; gap: 22px; margin-top: auto; padding-top: 10px; border-top: 1px solid #F0F0F0; color: #9CA3AF; font-size: 0.8em; }
+    .note-stage .slide.anchor-center .text-card { margin: auto; }
+    .note-stage .slide.anchor-bottom .text-card { margin: auto auto 8% auto; }
+    .note-stage .slide.anchor-high .text-card { margin: 12% auto auto auto; }
+    .note-stage .slide.anchor-left { align-items: flex-start; justify-content: center; text-align: left; padding-left: 46%; }
+    .note-stage .slide.anchor-left .band { position: absolute; left: 0; top: 0; bottom: 0; width: 40%; }
+    .note-stage .slide.anchor-left .rule { display: none; }
+    .note-stage .slide.anchor-bottom { align-items: flex-start; justify-content: flex-end; text-align: left; padding-bottom: 14%; }
+    .note-stage .slide.anchor-bottom .rule { display: none; }
+    .note-stage .slide.anchor-high { align-items: center; justify-content: flex-start; text-align: center; padding-top: 22%; }
+    .note-stage .slide .mark-marker { background: color-mix(in srgb, var(--accent) 35%, transparent); border-radius: 4px; padding: 0 3px; }
+    .note-stage .slide .mark-underline { border-bottom: 3px solid var(--accent); }
+    .note-stage .slide .mark-color { color: var(--accent); font-weight: 700; }
+    .note-stage .slide .mark-wavy { text-decoration: underline wavy var(--accent); text-underline-offset: 4px; }
+    .note-stage .slide .idx { align-self: flex-start; color: #fff; font-weight: 700; border-radius: 8px; padding: 2px 9px; font-size: 14px; margin-bottom: 12px; }
+    .note-stage .slide .head { font-weight: 700; font-size: 1.15em; line-height: 1.4; margin-bottom: 10px; }
+    .note-stage .slide .line { line-height: 1.7; }
+    .note-stage .slide .sub { font-size: 14px; padding-left: 2px; }
+    .note-stage .slide .gap { height: 10px; }
+    .note-stage .slide .emoji { font-size: 28px; margin-right: 8px; }
+    .note-stage .slide .divider { height: 1px; margin: 8px 0; opacity: 0.4; }
+    .note-stage .slide .progress { margin-top: auto; font-size: 12px; opacity: 0.6; }
+    .note-stage .slide.layout-airy { padding: 16% 12%; }
+    .note-stage .slide.layout-chat .line { margin-bottom: 6px; }
+    .note-stage .nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0, 0, 0, 0.4); color: #fff; border: 0; border-radius: 50%; width: 32px; height: 32px; font-size: 18px; z-index: 2; }
+    .note-stage .prev { left: 10px; }
+    .note-stage .next { right: 10px; }
+    .note-stage .dots { position: absolute; bottom: 10px; left: 0; right: 0; display: flex; gap: 5px; justify-content: center; z-index: 2; }
+    .note-stage .dots i { width: 6px; height: 6px; border-radius: 50%; background: rgba(255, 255, 255, 0.55); display: block; }
+    .note-stage .dots i.on { background: #fff; }
+    .note-meta { padding: 14px 16px 16px; overflow-y: auto; }
+    .note-meta .t { font: 600 16px/1.4 "Segoe UI", "Microsoft YaHei", sans-serif; margin: 0 0 6px; }
+    .note-meta .b { white-space: pre-wrap; font-size: 14px; line-height: 1.7; margin: 0; }
+    .note-meta .tags { margin-top: 8px; color: #ff2442; font-size: 14px; }
+    .page-edits { flex: 1; min-width: 280px; max-width: 460px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+    .field label { display: block; color: var(--muted); font-size: 12px; margin-bottom: 3px; }
+    .field input, .field textarea { width: 100%; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; }
+    .field textarea { resize: vertical; min-height: 60px; }
+    .page { background: var(--panel); border-radius: 10px; padding: 8px; }
+    .page textarea { width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; background: var(--bg); resize: vertical; min-height: 52px; }
+    .page-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; color: var(--muted); font-size: 12px; }
+    .page-bar input[type="range"] { width: 90px; }
+    .page-bar .size-label { width: 2.2em; text-align: right; }
+    .sheet-preview.cover { align-items: center; justify-content: center; text-align: center; padding: 24px; font: 700 28px/1.3 "Segoe UI", "Microsoft YaHei", sans-serif; }
+    .sheet-preview.content { align-items: flex-start; padding: 22px 18px; font: 16px/1.6 "Segoe UI", "Microsoft YaHei", sans-serif; white-space: pre-wrap; }
+    .sheet-preview .accent { color: #ff2442; }
+    #chips { display: flex; gap: 8px; flex-wrap: wrap; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+    .chip { background: var(--bg); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; font-size: 13px; }
+    .chip:hover { border-color: var(--accent); color: var(--accent); }
+    #thread { flex: 1; overflow-y: auto; padding: 18px 18px 8px; display: flex; flex-direction: column; gap: 14px; }
+    .bubble { max-width: 90%; padding: 10px 14px; border-radius: 14px; white-space: pre-wrap; }
+    .bubble.user { align-self: flex-end; background: var(--accent); color: var(--accent-ink); border-bottom-right-radius: 4px; }
+    .bubble.assistant { align-self: flex-start; background: var(--bg); border-bottom-left-radius: 4px; box-shadow: var(--shadow); }
+    .note-card { align-self: flex-start; background: var(--bg); border-radius: 16px; box-shadow: var(--shadow); padding: 16px 18px; max-width: 440px; width: 100%; }
+    .note-card .note-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+    .note-card h3 { font: 600 18px/1.3 "Segoe UI", "Microsoft YaHei", sans-serif; margin: 0; }
+    .note-card .note-body { margin: 10px 0; }
+    .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tags span { color: var(--accent); font-size: 13px; }
+    .note-picks { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+    .note-picks .mini { width: 64px; height: 64px; border-radius: 8px; overflow: hidden; border: 2px solid transparent; background: var(--thumb); cursor: pointer; }
+    .note-picks .mini.on { border-color: var(--accent); }
+    .note-picks .mini img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .export { background: none; border: 1px solid var(--line); border-radius: 8px; padding: 4px 10px; font-size: 13px; color: var(--muted); display: flex; gap: 4px; align-items: center; }
+    .export:hover { color: var(--accent); border-color: var(--accent); }
+    #composer { display: flex; gap: 8px; padding: 12px 14px; border-top: 1px solid var(--line); align-items: flex-end; }
+    #ask { flex: 1; resize: none; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; background: var(--bg); max-height: 160px; }
+    #send { background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 10px; padding: 9px 12px; display: flex; }
+    #send:disabled { opacity: 0.4; }
+    .hint { color: var(--muted); font-size: 13px; padding: 8px 4px; }
+
+    #settings { position: fixed; inset: 0; background: rgba(28, 25, 23, 0.45); z-index: 20; display: flex; align-items: center; justify-content: center; padding: 24px; }
+    #settings[hidden] { display: none; }
+    .settings-window { width: min(760px, 100%); height: min(560px, 100%); background: var(--bg); border-radius: 16px; box-shadow: var(--shadow); display: flex; overflow: hidden; }
+    .settings-nav { width: 180px; flex: none; background: var(--panel); border-right: 1px solid var(--line); padding: 18px 10px; display: flex; flex-direction: column; gap: 2px; }
+    .settings-nav h2 { font: 600 13px/1.2 "Segoe UI", "Microsoft YaHei", sans-serif; color: var(--muted); margin: 0 8px 10px; letter-spacing: 0.04em; }
+    .settings-nav button { text-align: left; background: none; border: 0; border-radius: 8px; padding: 8px 10px; color: var(--ink); }
+    .settings-nav button:hover { background: var(--bg); }
+    .settings-nav button.on { background: var(--bg); color: var(--accent); font-weight: 600; }
+    .settings-page { flex: 1; overflow-y: auto; padding: 22px 26px; }
+    .settings-page[hidden] { display: none; }
+    .settings-page h3 { font: 600 18px/1.3 "Segoe UI", "Microsoft YaHei", sans-serif; margin: 0 0 4px; }
+    .settings-page label { display: block; color: var(--muted); font-size: 13px; margin: 14px 0 4px; }
+    .settings-page input, .settings-page select { width: 100%; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; }
+    .prompt-item { display: flex; gap: 6px; margin-top: 6px; }
+    .prompt-item input { flex: 1; }
+    .row { display: flex; gap: 8px; margin-top: 18px; }
+    .primary { background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 10px; padding: 8px 16px; font-weight: 600; }
+    .ghost { background: none; border: 1px solid var(--line); border-radius: 10px; padding: 8px 14px; }
+    #menu { display: none; }
+
+    #work-list { overflow-y: auto; flex: 1; }
+    #work-list[hidden] { display: none; }
+    body.zone-works #list, body.zone-works #q, body.zone-works #count { display: none; }
+    body.zone-works #grid, body.zone-works #work { display: none; }
+    body.zone-works #preview { display: flex; }
+
+    /* 作品预览故意用小红书自己的颜色，不跟随应用主题，方便和发布后的效果对比。 */
+    #preview { display: none; flex-direction: column; background: #f5f5f5; min-height: 100%; }
+    .preview-bar { display: flex; gap: 8px; align-items: center; padding: 10px 16px; background: var(--bg); border-bottom: 1px solid var(--line); }
+    #preview .xhs { margin: 24px auto; }
+    .xhs { width: min(640px, 100%); background: #fff; color: #1a1a1a; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); }
+    .xhs-gallery { position: relative; aspect-ratio: 3/4; background: #000; }
+    .xhs-gallery img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .xhs-gallery .nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0, 0, 0, 0.4); color: #fff; border: 0; border-radius: 50%; width: 32px; height: 32px; font-size: 18px; }
+    .xhs-gallery .prev { left: 10px; }
+    .xhs-gallery .next { right: 10px; }
+    .xhs-dots { position: absolute; bottom: 10px; left: 0; right: 0; display: flex; gap: 5px; justify-content: center; }
+    .xhs-dots i { width: 6px; height: 6px; border-radius: 50%; background: rgba(255, 255, 255, 0.5); display: block; }
+    .xhs-dots i.on { background: #fff; }
+    .xhs-body { padding: 14px 16px 16px; }
+    .xhs-body h3 { font: 600 16px/1.4 "Segoe UI", "Microsoft YaHei", sans-serif; margin: 0 0 8px; }
+    .xhs-body .text { white-space: pre-wrap; font-size: 14px; line-height: 1.7; margin: 0; }
+    .xhs-tags { margin-top: 8px; }
+    .xhs-tags span { color: #ff2442; font-size: 14px; margin-right: 8px; }
+    .xhs-bar { display: flex; gap: 22px; margin-top: 14px; padding-top: 12px; border-top: 1px solid #f0f0f0; color: #666; font-size: 13px; }
+    .xhs-source { display: block; margin-top: 12px; color: #999; font-size: 12px; background: none; border: 0; padding: 0; cursor: pointer; }
+    .xhs-source:hover { color: #ff2442; }
+
+    @media (max-width: 760px) {
+      #sidebar { position: fixed; inset: 0 auto 0 0; z-index: 15; transform: translateX(-100%); transition: transform 0.2s; }
+      body.nav #sidebar { transform: none; box-shadow: var(--shadow); }
+      #menu { display: flex; position: fixed; top: 10px; left: 10px; z-index: 16; background: var(--panel); border-radius: 10px; box-shadow: var(--shadow); }
+      body.working #work { grid-template-columns: 1fr; }
+      #source { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <button type="button" class="icon-btn" id="menu" aria-label="打开素材列表">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+  <aside id="sidebar">
+    <div class="brand">
+      <h1>素材库</h1>
+      <button type="button" class="icon-btn" id="settings-btn" aria-label="设置">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.6.77 1.05 1.41 1.2H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
+    <div class="zones">
+      <button type="button" class="on" id="zone-materials">素材</button>
+      <button type="button" id="zone-works">作品</button>
+    </div>
+    <input id="q" type="search" placeholder="搜索正文或作者" autocomplete="off">
+    <div id="count"></div>
+    <div class="select-bar" id="select-bar">
+      <span id="select-count">未选择</span>
+      <button type="button" class="ghost" id="select-all">全选</button>
+      <button type="button" class="ghost" id="delete-selected">删除</button>
+    </div>
+    <div id="list"><p class="empty">正在加载…</p></div>
+    <div id="work-list" hidden></div>
+  </aside>
+  <div id="stage">
+    <div id="grid"></div>
+    <div id="work">
+      <div class="post-toolbar">
+        <button type="button" class="primary" id="create-btn">创作小红书图文</button>
+        <button type="button" class="ghost" id="delete-tweet">删除这条素材</button>
+      </div>
+      <div id="source"></div>
+    </div>
+    <div id="preview" hidden></div>
+  </div>
+  <div id="editor">
+      <div class="editor-bar">
+        <button type="button" class="ghost" id="editor-back">返回</button>
+        <select id="tier-pick">
+          <option value="">自动</option>
+          <option value="极短">极短</option>
+          <option value="短文">短文</option>
+          <option value="中文">中文</option>
+          <option value="长文">长文</option>
+        </select>
+        <select id="prompt-pick"></select>
+        <select id="theme-pick">
+          <option value="autumn">秋叶水彩</option>
+          <option value="sketch">浅蓝素描</option>
+          <option value="cartoon">清新卡通</option>
+          <option value="literary">文艺素描</option>
+          <option value="beige">米色素描</option>
+          <option value="plain">纯色</option>
+          <option value="post">贴文</option>
+        </select>
+        <button type="button" class="primary" id="gen-btn">生成</button>
+        <button type="button" class="ghost" id="add-page">加一页</button>
+        <button type="button" class="primary" id="save-work">保存</button>
+        <span class="hint" id="editor-status"></span>
+      </div>
+      <div id="pages">
+        <div class="note-stage" id="note-stage">
+          <div class="gallery">
+            <button type="button" class="nav prev">‹</button>
+            <button type="button" class="nav next">›</button>
+            <div class="dots" id="note-dots"></div>
+          </div>
+          <div class="note-meta">
+            <h3 class="t" id="note-title">标题</h3>
+            <p class="b" id="note-body"></p>
+            <div class="tags" id="note-tags"></div>
+          </div>
+        </div>
+        <div class="page-edits" id="page-edits">
+          <div class="field"><label for="edit-title">标题</label><input id="edit-title" type="text"></div>
+          <div class="field"><label for="edit-body">正文</label><textarea id="edit-body"></textarea></div>
+          <div class="field"><label for="edit-tags">标签（空格分隔）</label><input id="edit-tags" type="text"></div>
+          <div id="page-list"></div>
+        </div>
+      </div>
+    </div>
+  <div id="settings" hidden>
+    <div class="settings-window">
+      <nav class="settings-nav">
+        <h2>设置</h2>
+        <button type="button" class="on" data-page="model">模型</button>
+      </nav>
+      <div class="settings-page" data-page="model">
+        <h3>模型</h3>
+        <label for="cfg-base">接口地址</label>
+        <input id="cfg-base" type="text" placeholder="https://api.openai.com/v1">
+        <label for="cfg-key">密钥（已填写则留空表示不修改）</label>
+        <input id="cfg-key" type="password" autocomplete="off">
+        <label for="cfg-model">模型名</label>
+        <input id="cfg-model" type="text" placeholder="gpt-4o-mini">
+        <label for="cfg-endpoint">端点</label>
+        <select id="cfg-endpoint">
+          <option value="chat">chat / chat/completions</option>
+          <option value="responses">responses</option>
+        </select>
+        <label>自定义模板（用 {text} 代表素材正文）</label>
+        <div id="prompt-list"></div>
+        <div class="row">
+          <button type="button" class="ghost" id="add-prompt">新增模板</button>
+          <button type="button" class="primary" id="save-config">保存</button>
+          <button type="button" class="ghost" id="settings-close">关闭</button>
+        </div>
+        <p class="hint" id="settings-status"></p>
+      </div>
+    </div>
+  </div>
+  <script>
+    const listEl = document.getElementById("list");
+    const gridEl = document.getElementById("grid");
+    const countEl = document.getElementById("count");
+    const qEl = document.getElementById("q");
+    const sourceEl = document.getElementById("source");
+    const pageListEl = document.getElementById("page-list");
+    let slideAt = 0;
+
+    const PAGE = 30;
+    let offset = 0;
+    let total = 0;
+    let loading = false;
+    let currentId = "";
+    const loaded = [];
+    let configCache = null;
+    let currentTweet = null;
+    let editingWorkId = "";
+    let generating = false;
+    let stopped = false;
+    const picked = [];
+
+    function when(iso) {
+      if (!iso) return "";
+      const date = new Date(iso);
+      if (Number.isNaN(date.getTime())) return iso;
+      const p = (n) => String(n).padStart(2, "0");
+      return date.getFullYear() + "-" + p(date.getMonth() + 1) + "-" + p(date.getDate()) + " " + p(date.getHours()) + ":" + p(date.getMinutes());
+    }
+
+    function dayGroup(iso) {
+      const date = new Date(iso);
+      if (Number.isNaN(date.getTime())) return "更早";
+      const startOfDay = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+      const days = Math.round((startOfDay(new Date()) - startOfDay(date)) / 86400000);
+      if (days <= 0) return "今天";
+      if (days === 1) return "昨天";
+      if (days < 7) return "本周";
+      return "更早";
+    }
+
+    function el(tag, cls, text) {
+      const node = document.createElement(tag);
+      if (cls) node.className = cls;
+      if (text !== undefined) node.textContent = text;
+      return node;
+    }
+
+    function thumb(item, cls) {
+      const node = el("div", cls || "thumb");
+      const file = item.cover || "";
+      if (!file) return node;
+      if (file.endsWith(".mp4")) {
+        node.classList.add("video");
+        return node;
+      }
+      const img = document.createElement("img");
+      img.alt = "";
+      img.loading = "lazy";
+      img.src = "/thumb/" + item.id + "/" + file;
+      node.appendChild(img);
+      return node;
+    }
+
+    function reset() {
+      offset = 0;
+      total = 0;
+      loaded.length = 0;
+      listEl.textContent = "";
+      gridEl.textContent = "";
+      loadMore();
+    }
+
+    async function loadMore() {
+      if (loading) return;
+      if (offset !== 0 && offset >= total) return;
+      loading = true;
+      const res = await fetch("/api/items?q=" + encodeURIComponent(qEl.value.trim()) + "&offset=" + offset + "&limit=" + PAGE);
+      const data = await res.json();
+      loading = false;
+      total = data.total || 0;
+      const items = data.items || [];
+      countEl.textContent = total ? "共 " + total + " 条" : "";
+      if (offset === 0 && !items.length) {
+        listEl.appendChild(el("p", "empty", qEl.value.trim() ? "没有匹配的素材。" : "还没有收录。去 X 打开一条贴文，点扩展图标收录。"));
+        return;
+      }
+      let lastGroup = loaded.length ? dayGroup(loaded[loaded.length - 1].createdAt) : "";
+      for (const item of items) {
+        loaded.push(item);
+        const group = dayGroup(item.createdAt);
+        if (group !== lastGroup) {
+          listEl.appendChild(el("div", "group", group));
+          lastGroup = group;
+        }
+        listEl.appendChild(listRow(item));
+        if (!currentId) gridEl.appendChild(cardOf(item));
+      }
+      offset += items.length;
+      const more = document.getElementById("more");
+      if (more) more.remove();
+      if (offset < total) {
+        listEl.appendChild(el("p", "more", "继续滚动加载其余 " + (total - offset) + " 条"));
+        listEl.lastChild.id = "more";
+      }
+    }
+
+    function listRow(item) {
+      const row = el("div", "item" + (item.id === currentId ? " active" : ""));
+      row.dataset.id = item.id;
+      const box = document.createElement("input");
+      box.type = "checkbox";
+      box.addEventListener("change", refreshSelectBar);
+      row.appendChild(box);
+      const btn = el("button", "item");
+      btn.type = "button";
+      btn.appendChild(thumb(item));
+      const text = el("div");
+      const who = el("div");
+      who.appendChild(el("span", "who", item.authorName || "未知作者"));
+      who.appendChild(el("span", "when", " · " + when(item.createdAt)));
+      text.appendChild(who);
+      text.appendChild(el("p", "excerpt", item.text || "（无正文）"));
+      btn.appendChild(text);
+      if (item.works) btn.appendChild(el("span", "badge", "已创作"));
+      btn.addEventListener("click", () => selectItem(item.id));
+      row.appendChild(btn);
+      return row;
+    }
+
+    function cardOf(item) {
+      const btn = el("button", "card");
+      btn.type = "button";
+      btn.appendChild(thumb(item, "cover"));
+      const pad = el("div", "pad");
+      pad.appendChild(el("div", "who", item.authorName || "未知作者"));
+      pad.appendChild(el("p", "excerpt", item.text || "（无正文）"));
+      btn.appendChild(pad);
+      btn.addEventListener("click", () => selectItem(item.id));
+      return btn;
+    }
+
+    const TOKEN = /(https?:\/\/[^\s]+)|(@[A-Za-z0-9_]{1,15})|(#[^\s#]+)/g;
+    const TRAILING = "。，、！？…）)";
+
+    function trimTrailingPunct(raw) {
+      let end = raw.length;
+      while (end > 0 && TRAILING.indexOf(raw[end - 1]) !== -1) end--;
+      if (end === 0) return [raw, ""];
+      return [raw.slice(0, end), raw.slice(end)];
+    }
+
+    function linkNode(href, label) {
+      const a = document.createElement("a");
+      a.href = href;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.textContent = label;
+      return a;
+    }
+
+    function appendInline(parent, text, urls) {
+      const known = {};
+      for (const item of urls || []) if (item && item.url) known[item.url] = item;
+      TOKEN.lastIndex = 0;
+      let cursor = 0;
+      let match;
+      while ((match = TOKEN.exec(text))) {
+        if (match.index > cursor) parent.appendChild(document.createTextNode(text.slice(cursor, match.index)));
+        const raw = match[0];
+        const [core, tail] = trimTrailingPunct(raw);
+        if (match[1]) {
+          const info = known[core];
+          let label = (info && info.display) || core.replace(/^https?:\/\//, "");
+          if (label.length > 40) label = label.slice(0, 37) + "…";
+          parent.appendChild(linkNode((info && info.expanded) || core, label));
+        } else if (match[2]) {
+          parent.appendChild(linkNode("https://x.com/" + core.slice(1), core));
+        } else {
+          parent.appendChild(linkNode("https://x.com/hashtag/" + encodeURIComponent(core.slice(1)), core));
+        }
+        if (tail) parent.appendChild(document.createTextNode(tail));
+        cursor = match.index + raw.length;
+      }
+      if (cursor < text.length) parent.appendChild(document.createTextNode(text.slice(cursor)));
+    }
+
+    function renderText(text, urls) {
+      const box = el("div", "body");
+      let any = false;
+      for (const para of (text || "").split(/\n{2,}/)) {
+        if (!para.trim()) continue;
+        any = true;
+        const p = document.createElement("p");
+        para.split("\n").forEach((line, i) => {
+          if (i) p.appendChild(document.createElement("br"));
+          appendInline(p, line, urls);
+        });
+        box.appendChild(p);
+      }
+      if (!any) box.appendChild(el("p", "", "（这条没有正文）"));
+      return box;
+    }
+
+    function mediaBlock(id, item) {
+      const src = "/media/" + id + "/" + item.file;
+      if (item.type === "video" || item.type === "animated_gif") {
+        const box = el("div", "shot video");
+        box.addEventListener("click", () => {
+          if (box.classList.contains("playing")) return;
+          box.classList.add("playing");
+          const video = document.createElement("video");
+          video.controls = true;
+          video.autoplay = true;
+          video.loop = item.type === "animated_gif";
+          video.src = src;
+          box.appendChild(video);
+        });
+        return box;
+      }
+      const box = el("div", "shot");
+      const img = document.createElement("img");
+      img.src = "/thumb/" + id + "/" + item.file;
+      img.alt = "";
+      let full = false;
+      box.addEventListener("click", () => {
+        full = !full;
+        img.src = full ? src : "/thumb/" + id + "/" + item.file;
+      });
+      box.appendChild(img);
+      return box;
+    }
+
+    async function selectItem(id) {
+      currentId = id;
+      document.body.classList.add("working");
+      document.body.classList.remove("nav");
+      for (const btn of listEl.querySelectorAll(".item")) btn.classList.toggle("active", btn.dataset.id === id);
+      pageListEl.textContent = "";
+      lastResult = null;
+      picked.length = 0;
+      sourceEl.textContent = "";
+      sourceEl.appendChild(el("p", "empty", "正在读取…"));
+      const res = await fetch("/api/tweets/" + id);
+      if (!res.ok) {
+        sourceEl.textContent = "";
+        sourceEl.appendChild(el("p", "empty", "这条素材读不出来。"));
+        return;
+      }
+      currentTweet = await res.json();
+      renderSource(currentTweet);
+      renderChips();
+    }
+
+    function renderSource(tweet) {
+      sourceEl.textContent = "";
+      const post = el("article", "post");
+      const head = el("div", "post-head");
+      const name = (tweet.author && tweet.author.name) || "未知";
+      head.appendChild(el("div", "avatar", name.slice(0, 1)));
+      const who = el("div");
+      who.appendChild(el("div", "name", name));
+      who.appendChild(el("div", "meta", (tweet.author && tweet.author.handle ? "@" + tweet.author.handle + " · " : "") + when(tweet.createdAt)));
+      head.appendChild(who);
+      post.appendChild(head);
+      post.appendChild(renderText(tweet.text, tweet.urls));
+      const media = el("div", "media");
+      for (const item of tweet.media || []) media.appendChild(mediaBlock(tweet.id, item));
+      post.appendChild(media);
+      if (tweet.url) {
+        const link = el("a", "hint", "打开原贴");
+        link.href = tweet.url;
+        link.target = "_blank";
+        link.rel = "noopener";
+        post.appendChild(link);
+      }
+      const related = (loaded.find((item) => item.id === tweet.id) || {}).workList || [];
+      if (related.length) {
+        const jump = el("button", "hint", "已创作 " + related.length + " 件作品 · 查看");
+        jump.type = "button";
+        jump.addEventListener("click", () => showZone("works", related[0].id));
+        post.appendChild(jump);
+      }
+      sourceEl.appendChild(post);
+    }
+
+    function openEditor() {
+      if (!currentTweet) return;
+      editingWorkId = "";
+      document.body.classList.add("editing");
+      fillPromptPick();
+      if (!pageListEl.children.length) addPage("");
+      document.getElementById("editor-status").textContent = "";
+    }
+
+    function closeEditor() {
+      document.body.classList.remove("editing");
+    }
+
+    function fillPromptPick() {
+      const select = document.getElementById("prompt-pick");
+      const current = select.value;
+      select.textContent = "";
+      for (const item of (configCache && configCache.prompts) || []) {
+        const option = el("option", "", item.name);
+        option.value = item.name;
+        select.appendChild(option);
+      }
+      if (current) select.value = current;
+    }
+
+    function addPage(text, size) {
+      const card = el("div", "page");
+      const bar = el("div", "page-bar");
+      const label = el("span", "", "");
+      const sizeLabel = el("span", "size-label", "");
+      const slider = document.createElement("input");
+      slider.type = "range";
+      slider.min = "16";
+      slider.max = "64";
+      slider.value = String(size || suggestSize(text));
+      slider.addEventListener("input", () => {
+        sizeLabel.textContent = slider.value;
+        paintNote();
+      });
+      sizeLabel.textContent = slider.value;
+      const del = el("button", "", "删除");
+      del.type = "button";
+      del.addEventListener("click", () => {
+        if (pageListEl.children.length === 1) return;
+        card.remove();
+        renumber();
+      });
+      bar.append(label, slider, sizeLabel, del);
+      const area = document.createElement("textarea");
+      area.value = text || "";
+      area.addEventListener("input", paintNote);
+      card.append(bar, area);
+      pageListEl.appendChild(card);
+      renumber();
+      return card;
+    }
+
+    function suggestSize(text) {
+      const length = (text || "").replace(/\s/g, "").length;
+      if (length <= 16) return 40;
+      if (length <= 40) return 30;
+      if (length <= 80) return 22;
+      return 18;
+    }
+
+    function renumber() {
+      pageListEl.querySelectorAll(".page").forEach((card, i) => {
+        card.querySelector(".page-bar span").textContent = i === 0 ? "封面文字" : "第 " + (i + 1) + " 页";
+      });
+      paintNote();
+    }
+
+    function fillMeta(result) {
+      document.getElementById("edit-title").value = (result && result.title) || "";
+      document.getElementById("edit-body").value = (result && result.body) || "";
+      document.getElementById("edit-tags").value = ((result && result.tags) || []).join(" ");
+      paintNote();
+    }
+
+    function metaFromEditor() {
+      return {
+        title: document.getElementById("edit-title").value.trim(),
+        body: document.getElementById("edit-body").value,
+        tags: document.getElementById("edit-tags").value.split(/\s+/).filter(Boolean),
+      };
+    }
+
+    function pageData() {
+      return Array.from(pageListEl.querySelectorAll(".page")).map((card) => ({
+        text: card.querySelector("textarea").value.trim(),
+        size: Number(card.querySelector("input[type=range]").value),
+      }));
+    }
+
+    function pageTexts() {
+      return pageData().map((page) => page.text);
+    }
+
+    const THEMES = {
+      autumn: { bg: "url('/backgrounds/autumn.jpg')", card: "rgba(255,255,255,0.62)", ink: "#2B2118", accent: "#C4492C", titleFont: "'title-black', 'Microsoft YaHei', sans-serif", bodyFont: "'song', 'Microsoft YaHei', sans-serif", mark: "underline", anchor: "center" },
+      sketch: { bg: "url('/backgrounds/sketch.jpg')", card: "rgba(255,255,255,0.66)", ink: "#2A3340", accent: "#5C7A99", titleFont: "'hanchan', 'Microsoft YaHei', sans-serif", bodyFont: "'screen-song', 'Microsoft YaHei', sans-serif", mark: "underline", anchor: "center" },
+      cartoon: { bg: "url('/backgrounds/cartoon.jpg')", card: "rgba(255,255,255,0.7)", ink: "#2B2B2B", accent: "#E86A33", titleFont: "'round', 'Microsoft YaHei', sans-serif", bodyFont: "'Microsoft YaHei', sans-serif", mark: "marker", anchor: "high" },
+      literary: { bg: "url('/backgrounds/literary.jpg')", card: "rgba(255,252,247,0.6)", ink: "#3A2E2A", accent: "#8C5A3C", titleFont: "'handwrite', 'KaiTi', serif", bodyFont: "'fangsong', 'Microsoft YaHei', sans-serif", mark: "wavy", anchor: "bottom" },
+      beige: { bg: "url('/backgrounds/beige.jpg')", card: "rgba(255,255,255,0.64)", ink: "#2B2118", accent: "#B06A3B", titleFont: "'jiying', 'Microsoft YaHei', sans-serif", bodyFont: "'song', 'Microsoft YaHei', sans-serif", mark: "underline", anchor: "center" },
+      plain: { bg: "#FFF6EE", card: "transparent", ink: "#2B2118", accent: "#FF2442", titleFont: "'SimHei', 'Microsoft YaHei', sans-serif", bodyFont: "'Microsoft YaHei', sans-serif", mark: "marker", anchor: "center" },
+      post: { bg: "#F4F2EE", card: "#FFFFFF", ink: "#1C1917", accent: "#1D9BF0", titleFont: "'Microsoft YaHei', sans-serif", bodyFont: "'Microsoft YaHei', sans-serif", mark: "color", anchor: "center", kind: "post" },
+    };
+    const EMOJI_RE = /^(\p{Extended_Pictographic}️?\s*)(.*)$/u;
+
+    function currentTheme() {
+      return THEMES[document.getElementById("theme-pick").value] || THEMES.autumn;
+    }
+
+    function fillLine(node, text, theme, emphasize) {
+      const parts = String(text).split(/【([^】]+)】/);
+      parts.forEach((part, i) => {
+        if (part === "") return;
+        if (i % 2 === 1) {
+          const mark = el("span", "mark mark-" + theme.mark, part);
+          mark.style.setProperty("--accent", theme.accent);
+          node.appendChild(mark);
+        } else node.appendChild(document.createTextNode(part));
+      });
+      if (emphasize) node.style.color = theme.accent;
+    }
+
+    function buildSlide(text, index, total, theme, size) {
+      const slide = el("div", "slide");
+      slide.style.background = theme.bg;
+      slide.style.backgroundSize = "cover";
+      slide.style.backgroundPosition = "center";
+      slide.style.color = theme.ink;
+      slide.style.fontFamily = theme.bodyFont;
+      if (size) slide.style.fontSize = size + "px";
+      const card = el("div", "text-card");
+      card.style.background = theme.card;
+      slide.appendChild(card);
+      const add = (node) => card.appendChild(node);
+      const lines = (text || "").split("\n").map((line) => line.trim()).filter((line) => line);
+      if (theme.kind === "post") {
+        slide.classList.add("post-slide");
+        card.style.background = "transparent";
+        const device = el("div", "mini-phone");
+        const screen = el("div", "mini-screen");
+        const status = el("div", "mini-status");
+        status.appendChild(el("span", "", "9:41"));
+        status.appendChild(el("span", "", "●●●"));
+        screen.appendChild(status);
+        const head = el("div", "post-head");
+        const avatar = el("div", "post-avatar", (currentTweet && currentTweet.author && currentTweet.author.name || "贴").slice(0, 1));
+        avatar.style.background = theme.accent;
+        const who = el("div", "");
+        who.appendChild(el("div", "post-name", (currentTweet && currentTweet.author && currentTweet.author.name) || "素材"));
+        const when = currentTweet && currentTweet.createdAt ? currentTweet.createdAt.slice(0, 10) : "";
+        who.appendChild(el("div", "post-handle", (currentTweet && currentTweet.author && currentTweet.author.handle ? "@" + currentTweet.author.handle : "") + (when ? " · " + when : "")));
+        head.append(avatar, who);
+        screen.appendChild(head);
+        lines.forEach((line) => {
+          const node = el("div", "post-line");
+          fillLine(node, line, theme, false);
+          screen.appendChild(node);
+        });
+        const foot = el("div", "post-foot");
+        ["回复", "转发", "喜欢"].forEach((label) => foot.appendChild(el("span", "", label)));
+        screen.appendChild(foot);
+        device.appendChild(screen);
+        add(device);
+        return slide;
+      }
+      if (index === 0) {
+        slide.classList.add("cover", "anchor-" + theme.anchor);
+        slide.style.fontFamily = theme.titleFont;
+        if (theme.anchor === "left") {
+          const band = el("div", "band");
+          band.style.background = theme.accent;
+          slide.appendChild(band);
+        }
+        const rule = el("div", "rule");
+        rule.style.background = theme.accent;
+        add(rule);
+        lines.slice(0, 4).forEach((line) => {
+          const node = el("div", "line");
+          fillLine(node, line, theme, false);
+          add(node);
+        });
+        return slide;
+      }
+      slide.classList.add("anchor-" + theme.anchor);
+      lines.forEach((line, i) => {
+        const node = el("div", i === 0 ? "head" : "line");
+        if (i === 0) node.style.fontFamily = theme.titleFont;
+        fillLine(node, line, theme, false);
+        add(node);
+      });
+      const progress = el("div", "progress", String(index + 1).padStart(2, "0") + " / " + String(total).padStart(2, "0"));
+      add(progress);
+      return slide;
+    }
+
+    function paintNote() {
+      const gallery = document.querySelector("#note-stage .gallery");
+      gallery.querySelectorAll(".slide").forEach((node) => node.remove());
+      const dots = document.getElementById("note-dots");
+      dots.textContent = "";
+      const pages = pageData();
+      const count = Math.max(pages.length, 1);
+      if (slideAt >= count) slideAt = count - 1;
+      const theme = currentTheme();
+      pages.concat(pages.length ? [] : [{ text: "", size: 0 }]).forEach((page, i) => {
+        const slide = buildSlide(page.text, i, count, theme, page.size);
+        if (i === slideAt) slide.classList.add("on");
+        gallery.insertBefore(slide, gallery.querySelector(".prev"));
+        const dot = document.createElement("i");
+        if (i === slideAt) dot.className = "on";
+        dot.addEventListener("click", () => { slideAt = i; paintNote(); });
+        dots.appendChild(dot);
+      });
+      document.getElementById("note-title").textContent = document.getElementById("edit-title").value || "标题";
+      document.getElementById("note-body").textContent = document.getElementById("edit-body").value;
+      const tags = document.getElementById("note-tags");
+      tags.textContent = "";
+      document.getElementById("edit-tags").value.split(/\s+/).filter(Boolean).forEach((tag) => {
+        tags.appendChild(el("span", "", "#" + tag.replace(/^#/, "") + " "));
+      });
+    }
+
+    function showSlide(delta) {
+      const count = Math.max(pageTexts().length, 1);
+      slideAt = (slideAt + delta + count) % count;
+      paintNote();
+    }
+
+    function renderChips() {
+      fillPromptPick();
+    }
+
+    async function generate() {
+      if (generating || !currentTweet) return;
+      const status = document.getElementById("editor-status");
+      if (!configCache || !configCache.has_key) {
+        status.textContent = "还没配置模型。点左上角的齿轮填写。";
+        return;
+      }
+      const name = document.getElementById("prompt-pick").value;
+      const chosen = (configCache.prompts || []).find((item) => item.name === name);
+      if (!chosen) {
+        status.textContent = "先在设置里加一个提示词模板。";
+        return;
+      }
+      generating = true;
+      status.textContent = "正在生成…";
+      document.getElementById("gen-btn").disabled = true;
+      try {
+        const res = await fetch("/api/compose", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: currentTweet.id, prompt: chosen.text, tier: document.getElementById("tier-pick").value }),
+        });
+        if (!res.ok || !res.body) {
+          status.textContent = "生成失败（" + res.status + "）";
+          return;
+        }
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buf = "";
+        let result = null;
+        for (;;) {
+          const step = await reader.read();
+          if (step.done) break;
+          buf += decoder.decode(step.value, { stream: true });
+          const chunks = buf.split("\n\n");
+          buf = chunks.pop();
+          for (const chunk of chunks) {
+            const line = chunk.trim();
+            if (!line.startsWith("data:")) continue;
+            const event = JSON.parse(line.slice(5));
+            if (event.error) { status.textContent = event.error; return; }
+            if (event.done && event.result) result = event.result;
+          }
+        }
+        if (!result) { status.textContent = "没有得到结果"; return; }
+        lastResult = result;
+        fillMeta(result);
+        pageListEl.textContent = "";
+        const pages = result.pages && result.pages.length ? result.pages : [result.body || ""];
+        pages.forEach((text) => addPage(text));
+        status.textContent = "生成完成，可以直接改字，预览会跟着变。";
+      } catch (e) {
+        status.textContent = "连接本地服务失败";
+      } finally {
+        generating = false;
+        document.getElementById("gen-btn").disabled = false;
+      }
+    }
+
+    let worksCache = [];
+
+    function selectedCount() {
+      return document.querySelectorAll("#list .item input:checked, #work-list .item input:checked").length;
+    }
+
+    function refreshSelectBar() {
+      const n = selectedCount();
+      document.body.classList.toggle("selecting", n > 0);
+      document.getElementById("select-count").textContent = n ? "已选 " + n + " 条" : "未选择";
+    }
+
+    async function deleteSelected() {
+      const works = document.body.classList.contains("zone-works");
+      const rows = document.querySelectorAll((works ? "#work-list" : "#list") + " .item input:checked");
+      const ids = Array.from(rows).map((box) => box.parentElement.dataset.id);
+      if (!ids.length || !confirm("删除选中的 " + ids.length + " 条？此操作不可恢复。")) return;
+      for (const id of ids) {
+        await fetch((works ? "/api/works/" : "/api/tweets/") + id, { method: "DELETE" });
+      }
+      document.body.classList.remove("selecting");
+      if (works) { loadWorks(); reset(); }
+      else reset();
+    }
+
+    async function loadWorks() {
+      const res = await fetch("/api/works");
+      const data = await res.json();
+      worksCache = data.items || [];
+      const list = document.getElementById("work-list");
+      list.textContent = "";
+      if (!worksCache.length) {
+        list.appendChild(el("p", "empty", "还没有作品。在素材里生成后，点「保存为作品」。"));
+        return;
+      }
+      for (const item of worksCache) {
+        const row = el("div", "item");
+        row.dataset.id = item.id;
+        const box = document.createElement("input");
+        box.type = "checkbox";
+        box.addEventListener("change", refreshSelectBar);
+        row.appendChild(box);
+        const btn = el("button", "item");
+        btn.type = "button";
+        const text = el("div");
+        text.appendChild(el("div", "who", item.title || "未命名"));
+        text.appendChild(el("p", "excerpt", (item.authorName || "") + " · " + (item.createdAt || "").replace("T", " ")));
+        btn.appendChild(text);
+        btn.addEventListener("click", () => openWork(item.id));
+        row.appendChild(btn);
+        list.appendChild(row);
+      }
+    }
+
+    function editWork(work) {
+      currentId = work.sourceId;
+      currentTweet = { id: work.sourceId, author: {} };
+      document.body.classList.add("editing");
+      fillPromptPick();
+      pageListEl.textContent = "";
+      const pages = work.pages && work.pages.length ? work.pages : [work.body || ""];
+      pages.forEach((page) => addPage(typeof page === "string" ? page : page.text, page.size));
+      fillPromptPick();
+      lastResult = { title: work.title, body: work.body, tags: work.tags || [] };
+      editingWorkId = work.id;
+      fillMeta(lastResult);
+      document.getElementById("editor-status").textContent = "正在编辑已保存的作品";
+    }
+
+    async function deleteOne(url, after) {
+      if (!confirm("删除这条？此操作不可恢复。")) return;
+      await fetch(url, { method: "DELETE" });
+      after();
+    }
+
+    async function openWork(id) {
+      for (const btn of document.querySelectorAll("#work-list .item")) btn.classList.toggle("active", btn.dataset.id === id);
+      const res = await fetch("/api/works/" + id);
+      if (!res.ok) return;
+      renderPreview(await res.json());
+    }
+
+    function renderPreview(work) {
+      const host = document.getElementById("preview");
+      host.hidden = false;
+      host.textContent = "";
+      const previewBar = el("div", "preview-bar");
+      const editBtn = el("button", "ghost", "编辑");
+      editBtn.type = "button";
+      editBtn.addEventListener("click", () => editWork(work));
+      const delBtn = el("button", "ghost", "删除");
+      delBtn.type = "button";
+      delBtn.addEventListener("click", () => deleteOne("/api/works/" + work.id, () => { host.hidden = true; loadWorks(); reset(); }));
+      previewBar.append(editBtn, delBtn);
+      host.appendChild(previewBar);
+      const card = el("article", "xhs note-stage");
+      const images = work.images || [];
+      const pages = work.pages || [];
+      if (!images.length && pages.length) {
+        const gallery = el("div", "gallery");
+        gallery.style.position = "relative";
+        gallery.style.aspectRatio = "3/4";
+        const theme = THEMES[work.theme] || THEMES.autumn;
+        let at = 0;
+        const slides = pages.map((page, i) => buildSlide(typeof page === "string" ? page : page.text, i, pages.length, theme, page.size));
+        const dots = el("div", "xhs-dots");
+        const show = (n) => {
+          at = (n + slides.length) % slides.length;
+          slides.forEach((slide, i) => slide.classList.toggle("on", i === at));
+          for (const dot of dots.children) dot.classList.toggle("on", Number(dot.dataset.i) === at);
+        };
+        slides.forEach((slide, i) => {
+          slide.style.position = "absolute";
+          gallery.appendChild(slide);
+          const dot = document.createElement("i");
+          dot.dataset.i = i;
+          dot.addEventListener("click", () => show(i));
+          dots.appendChild(dot);
+        });
+        if (slides.length > 1) {
+          const prev = el("button", "nav prev", "‹");
+          const next = el("button", "nav next", "›");
+          prev.type = "button";
+          next.type = "button";
+          prev.addEventListener("click", () => show(at - 1));
+          next.addEventListener("click", () => show(at + 1));
+          gallery.append(prev, next);
+        }
+        gallery.appendChild(dots);
+        show(0);
+        card.appendChild(gallery);
+      } else if (images.length) {
+        const gallery = el("div", "xhs-gallery");
+        const img = document.createElement("img");
+        img.alt = "";
+        gallery.appendChild(img);
+        const dots = el("div", "xhs-dots");
+        let at = 0;
+        const show = (n) => {
+          at = (n + images.length) % images.length;
+          const item = images[at];
+          img.src = "/media/" + item.id + "/" + item.file;
+          for (const dot of dots.children) dot.classList.toggle("on", Number(dot.dataset.i) === at);
+        };
+        images.forEach((_, i) => {
+          const dot = document.createElement("i");
+          dot.dataset.i = i;
+          dots.appendChild(dot);
+        });
+        if (images.length > 1) {
+          const prev = el("button", "nav prev", "‹");
+          const next = el("button", "nav next", "›");
+          prev.type = "button";
+          next.type = "button";
+          prev.addEventListener("click", () => show(at - 1));
+          next.addEventListener("click", () => show(at + 1));
+          gallery.append(prev, next);
+        }
+        gallery.appendChild(dots);
+        show(0);
+        card.appendChild(gallery);
+      }
+      const body = el("div", "xhs-body");
+      body.appendChild(el("h3", "", work.title || "未命名"));
+      body.appendChild(el("p", "text", work.body || ""));
+      if (work.tags && work.tags.length) {
+        const tags = el("div", "xhs-tags");
+        for (const tag of work.tags) tags.appendChild(el("span", "", "#" + tag));
+        body.appendChild(tags);
+      }
+      const bar = el("div", "xhs-bar");
+      bar.appendChild(el("span", "", "♡ 0"));
+      bar.appendChild(el("span", "", "☆ 0"));
+      bar.appendChild(el("span", "", "💬 0"));
+      body.appendChild(bar);
+      const source = el("button", "xhs-source", "来自素材 · 点击查看");
+      source.type = "button";
+      source.addEventListener("click", () => showZone("materials", work.sourceId));
+      body.appendChild(source);
+      card.appendChild(body);
+      host.appendChild(card);
+    }
+
+    function showZone(zone, focusId) {
+      const works = zone === "works";
+      document.body.classList.toggle("zone-works", works);
+      document.getElementById("zone-works").classList.toggle("on", works);
+      document.getElementById("zone-materials").classList.toggle("on", !works);
+      document.getElementById("work-list").hidden = !works;
+      document.getElementById("preview").hidden = !works;
+      if (works) {
+        loadWorks().then(() => { if (focusId) openWork(focusId); });
+      } else if (focusId) {
+        selectItem(focusId);
+      }
+    }
+
+    async function saveWork() {
+      const status = document.getElementById("editor-status");
+      const pages = pageData().filter((page) => page.text);
+      if (!pages.length) { status.textContent = "还没有内容。先生成或自己写一页。"; return; }
+      const meta = metaFromEditor();
+      const res = await fetch("/api/works", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sourceId: currentTweet.id,
+          id: editingWorkId,
+          title: meta.title || pages[0].text.slice(0, 20),
+          body: meta.body || pages.map((page) => page.text).join("\n\n"),
+          tags: meta.tags,
+          pages: pages,
+          theme: document.getElementById("theme-pick").value,
+          images: [],
+          author: currentTweet.author || {},
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        status.textContent = data.message || "保存失败";
+        return;
+      }
+      const saved = await res.json();
+      status.textContent = "已保存";
+      const entry = loaded.find((item) => item.id === currentTweet.id);
+      if (entry) {
+        entry.works = (entry.works || 0) + 1;
+        entry.workList = (entry.workList || []).concat([{ id: saved.id, title: saved.title }]);
+        const row = listEl.querySelector('.item[data-id="' + currentTweet.id + '"]');
+        if (row && !row.querySelector(".badge")) row.appendChild(el("span", "badge", "已创作"));
+      }
+    }
+
+    function promptRow(item) {
+      const row = el("div", "prompt-item");
+      const name = document.createElement("input");
+      name.value = item.name || "";
+      name.placeholder = "模板名";
+      const text = document.createElement("input");
+      text.value = item.text || "";
+      text.placeholder = "提示词，用 {text} 代表素材正文";
+      const del = el("button", "ghost", "删除");
+      del.type = "button";
+      del.addEventListener("click", () => row.remove());
+      row.append(name, text, del);
+      return row;
+    }
+
+    async function openSettings() {
+      const cfg = configCache || await loadConfig();
+      document.getElementById("cfg-base").value = cfg.base_url || "";
+      document.getElementById("cfg-key").value = "";
+      document.getElementById("cfg-key").placeholder = cfg.has_key ? "已填写，留空则不修改" : "";
+      document.getElementById("cfg-model").value = cfg.model || "";
+      document.getElementById("cfg-endpoint").value = cfg.endpoint || "chat";
+      const list = document.getElementById("prompt-list");
+      list.textContent = "";
+      for (const item of cfg.prompts || []) if (!item.builtin) list.appendChild(promptRow(item));
+      document.getElementById("settings-status").textContent = "";
+      document.getElementById("settings").hidden = false;
+    }
+
+    async function saveSettings() {
+      const prompts = [];
+      for (const row of document.querySelectorAll("#prompt-list .prompt-item")) {
+        const [name, text] = row.querySelectorAll("input");
+        if (name.value.trim()) prompts.push({ name: name.value.trim(), text: text.value });
+      }
+      const res = await fetch("/api/config", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          base_url: document.getElementById("cfg-base").value,
+          api_key: document.getElementById("cfg-key").value,
+          model: document.getElementById("cfg-model").value,
+          endpoint: document.getElementById("cfg-endpoint").value,
+          prompts: prompts,
+        }),
+      });
+      configCache = await res.json();
+      document.getElementById("settings-status").textContent = "已保存";
+      renderChips();
+    }
+
+    async function loadConfig() {
+      const res = await fetch("/api/config");
+      configCache = await res.json();
+      return configCache;
+    }
+
+    document.getElementById("delete-selected").addEventListener("click", deleteSelected);
+    document.getElementById("select-all").addEventListener("click", () => {
+      const works = document.body.classList.contains("zone-works");
+      const boxes = document.querySelectorAll((works ? "#work-list" : "#list") + " .item input");
+      const allOn = Array.from(boxes).every((box) => box.checked);
+      boxes.forEach((box) => (box.checked = !allOn));
+      refreshSelectBar();
+    });
+
+    document.getElementById("delete-tweet").addEventListener("click", () => {
+      if (!currentId) return;
+      deleteOne("/api/tweets/" + currentId, () => {
+        document.body.classList.remove("working");
+        reset();
+      });
+    });
+    document.getElementById("create-btn").addEventListener("click", openEditor);
+    document.getElementById("editor-back").addEventListener("click", closeEditor);
+    document.getElementById("gen-btn").addEventListener("click", generate);
+    document.getElementById("add-page").addEventListener("click", () => addPage(""));
+    document.querySelector("#note-stage .prev").addEventListener("click", () => showSlide(-1));
+    document.querySelector("#note-stage .next").addEventListener("click", () => showSlide(1));
+    ["edit-title", "edit-body", "edit-tags"].forEach((id) => {
+      document.getElementById(id).addEventListener("input", paintNote);
+    });
+    document.getElementById("theme-pick").addEventListener("change", paintNote);
+    document.getElementById("save-work").addEventListener("click", saveWork);
+
+    document.getElementById("zone-materials").addEventListener("click", () => showZone("materials"));
+    document.getElementById("zone-works").addEventListener("click", () => showZone("works"));
+
+    document.getElementById("settings-btn").addEventListener("click", openSettings);
+    document.querySelectorAll(".settings-nav button").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".settings-nav button").forEach((b) => b.classList.toggle("on", b === btn));
+        document.querySelectorAll(".settings-page").forEach((page) => {
+          page.hidden = page.dataset.page !== btn.dataset.page;
+        });
+      });
+    });
+    document.getElementById("settings-close").addEventListener("click", () => {
+      document.getElementById("settings").hidden = true;
+    });
+    document.getElementById("settings").addEventListener("click", (event) => {
+      if (event.target.id === "settings") document.getElementById("settings").hidden = true;
+    });
+    document.getElementById("add-prompt").addEventListener("click", () => {
+      document.getElementById("prompt-list").appendChild(promptRow({}));
+    });
+    document.getElementById("save-config").addEventListener("click", saveSettings);
+    document.getElementById("menu").addEventListener("click", () => document.body.classList.toggle("nav"));
+
+    listEl.addEventListener("scroll", () => {
+      if (listEl.scrollTop + listEl.clientHeight >= listEl.scrollHeight - 200) loadMore();
+    });
+    let timer = 0;
+    qEl.addEventListener("input", () => {
+      clearTimeout(timer);
+      timer = setTimeout(reset, 200);
+    });
+
+    loadConfig();
+    reset();
+  </script>
+</body>
+</html>

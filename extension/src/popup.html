@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>素材收录</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f7f4ef;
+      --ink: #1c1917;
+      --muted: #57534e;
+      --line: #e0d9ce;
+      --accent: #9f3d1c;
+      --accent-ink: #fffaf5;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1c1917;
+        --ink: #f5f0e8;
+        --muted: #a8a29e;
+        --line: #44403c;
+        --accent: #d4522a;
+        --accent-ink: #1c1917;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      width: 320px;
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 13px/1.5 "Segoe UI", "Microsoft YaHei", sans-serif;
+    }
+    header, main, footer { padding: 12px 14px; }
+    header { display: flex; align-items: baseline; justify-content: space-between; padding-bottom: 0; }
+    h1 { font: 600 15px/1.3 "Segoe UI", "Microsoft YaHei", sans-serif; margin: 0; }
+    .server { font-size: 12px; color: var(--muted); }
+    .server.down { color: var(--accent); }
+    main { min-height: 88px; }
+    .hint { color: var(--muted); margin: 4px 0 0; }
+    .author { font-weight: 600; }
+    .handle, .meta { color: var(--muted); }
+    .text {
+      margin: 6px 0 0;
+      white-space: pre-wrap;
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    button, a.btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: var(--accent);
+      color: var(--accent-ink);
+      border: 0;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font: 600 13px/1.4 "Segoe UI", "Microsoft YaHei", sans-serif;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    button:disabled { opacity: 0.45; cursor: default; }
+    footer { padding-top: 0; }
+    .result { min-height: 1.2em; margin: 8px 0 0; color: var(--muted); }
+    .library { display: inline; width: auto; background: none; color: var(--muted); padding: 0; font-weight: 400; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>素材收录</h1>
+    <div id="server" class="server">正在检查本地服务…</div>
+  </header>
+  <main>
+    <p id="hint" class="hint">正在读取当前页面…</p>
+    <div id="preview" hidden>
+      <div><span id="author" class="author"></span> <span id="handle" class="handle"></span></div>
+      <p id="text" class="text"></p>
+      <div id="meta" class="meta"></div>
+    </div>
+  </main>
+  <footer>
+    <button id="save" type="button" disabled>收录</button>
+    <p id="result" class="result"></p>
+    <a class="btn library" id="open" href="http://127.0.0.1:8787/" target="_blank" rel="noopener">打开素材库</a>
+  </footer>
+  <script src="popup.js"></script>
+</body>
+</html>

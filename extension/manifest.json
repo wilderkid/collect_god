@@ -1,0 +1,51 @@
+{
+  "manifest_version": 3,
+  "name": "素材收录",
+  "version": "0.1.0",
+  "description": "把当前 X 贴文收录到本地素材库",
+  "minimum_chrome_version": "111",
+  "permissions": ["activeTab"],
+  "host_permissions": [
+    "https://x.com/*",
+    "https://twitter.com/*",
+    "http://127.0.0.1:8787/*"
+  ],
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "action": {
+    "default_popup": "src/popup.html",
+    "default_title": "收录当前贴文",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "commands": {
+    "capture-tweet": {
+      "suggested_key": {
+        "default": "Alt+S"
+      },
+      "description": "收录当前贴文"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://x.com/*", "https://twitter.com/*"],
+      "js": ["src/normalize.js", "src/inject.js"],
+      "world": "MAIN",
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["https://x.com/*", "https://twitter.com/*"],
+      "js": ["src/content.js"],
+      "run_at": "document_start"
+    }
+  ]
+}
